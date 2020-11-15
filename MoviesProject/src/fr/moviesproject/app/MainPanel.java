@@ -8,23 +8,34 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel {
-	protected static JTextField searchTitle = new JTextField("Recherche par titre");
-	protected JTextField searchName = new JTextField("Recherche par nom (acteur, ...)");
+	private JTextField searchTitle = new JTextField("Recherche par titre");
+	private JTextField searchName = new JTextField("Recherche par nom (acteur, ...)");
+	private JTextField idMovieField = new JTextField("0");
 	
-	protected JButton goTitle = new JButton("Go");
-	protected JButton goName = new JButton("Go");
+	private JButton goTitle = new JButton("Go");
+	private JButton goName = new JButton("Go");
+	private JButton lastMovie = new JButton("Précédent");
+	private JButton nextMovie = new JButton("Suivant");
 	
 	public MainPanel() {
 		this.setLayout(null);
 		
 		searchTitle.setBounds(10, 10, 410, 35);
 		goTitle.setBounds(420, 10, 100, 35);
-		searchName.setBounds(10, 55, 410, 35);
-		goName.setBounds(420, 55, 100, 35);
+		
+		searchName.setBounds(10, 50, 410, 35);
+		goName.setBounds(420, 50, 100, 35);
+		
+		lastMovie.setBounds(10, 100, 150, 35);
+		idMovieField.setBounds(165, 100, 200, 35);
+		nextMovie.setBounds(370, 100, 150, 35);
 		
 		this.add(searchTitle);
 		this.add(goTitle);
 		this.add(searchName);
 		this.add(goName);
+		this.add(lastMovie);
+		this.add(idMovieField);
+		this.add(nextMovie);
 	}
 }
