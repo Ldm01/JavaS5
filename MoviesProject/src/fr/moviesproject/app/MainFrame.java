@@ -12,6 +12,7 @@ public class MainFrame extends JFrame {
 		this.setSize(550, 900);
 		this.setLocationRelativeTo(null); // Permet de centrer la fenêtre à l'ouverture
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setResizable(false);
 		
 		this.setContentPane(mainPanel = new MainPanel());
 		
