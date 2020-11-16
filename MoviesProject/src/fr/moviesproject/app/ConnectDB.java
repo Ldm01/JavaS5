@@ -56,6 +56,7 @@ public class ConnectDB {
 				movie = new Movie(rs.getInt("mov_id"), rs.getString("title"));
 				movie.setPoster(rs.getString("poster"));
 				movie.setYear(rs.getInt("year"));
+				movie.setRating(rs.getDouble("rating"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -79,6 +80,11 @@ public class ConnectDB {
 	
 	public Movie lastMovie() {
 		this.currentId = (this.currentId - 1) % this.MoviesId.size();
+		return this.getMovie();
+	}
+	
+	public Movie selectMovie() {
+		this.currentId = MainFrame.getMainPanel().getIdMovieField() - 1;
 		return this.getMovie();
 	}
 }

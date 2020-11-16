@@ -9,6 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
@@ -31,6 +32,8 @@ public class MainPanel extends JPanel {
 	
 	private JLabel movieTitle = new JLabel(currentMovie.getTitle());
 	private JLabel moviePoster = new JLabel(new ImageIcon(currentMovie.getPoster()));
+	private JLabel movieRating = new JLabel("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+	private JTextArea movieYear = new JTextArea("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 	
 	
 	public MainPanel() {
@@ -77,13 +80,26 @@ public class MainPanel extends JPanel {
 		
 		idMovieField.setHorizontalAlignment(JTextField.CENTER);
 		
-		movieTitle.setBounds(10, 150, 520, 35);
+		movieTitle.setBounds(10, 150, 510, 35);
 		movieTitle.setFont(new Font("Verdana", Font.PLAIN, 20));
 		movieTitle.setHorizontalAlignment(JLabel.CENTER);
 		movieTitle.setBackground(Color.BLACK);
 		movieTitle.setForeground(Color.WHITE);
+		movieTitle.setOpaque(true);
 		
-		moviePoster.setBounds(112, 200, 300, 448);
+		moviePoster.setBounds(10, 200, 300, 448);
+		
+		movieRating.setBounds(320, 285, 200, 35);
+		movieRating.setHorizontalAlignment(JLabel.CENTER);
+		movieRating.setFont(new Font("Verdana", Font.PLAIN, 20));
+		movieRating.setBackground(Color.ORANGE);
+		movieRating.setOpaque(true);
+		
+		movieYear.setBounds(320, 200, 200, 80);
+		movieYear.setFont(new Font("Verdana", Font.PLAIN, 20));
+		movieYear.setBackground(Color.ORANGE);
+		movieYear.setEditable(false);
+		movieYear.setOpaque(true);
 		
 		this.add(searchTitle);
 		this.add(goTitle);
@@ -94,11 +110,15 @@ public class MainPanel extends JPanel {
 		this.add(nextMovie);
 		this.add(movieTitle);
 		this.add(moviePoster);
+		this.add(movieRating);
+		this.add(movieYear);
 		
 		nextMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentMovie = connexion.nextMovie();
 				movieTitle.setText(currentMovie.getTitle());
+				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 				idMovieField.setText(Integer.toString(currentMovie.getId()));
 				if (currentMovie.getPoster() != null) {
 					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
@@ -113,6 +133,8 @@ public class MainPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				currentMovie = connexion.lastMovie();
 				movieTitle.setText(currentMovie.getTitle());
+				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 				idMovieField.setText(Integer.toString(currentMovie.getId()));
 				if (currentMovie.getPoster() != null) {
 					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
@@ -122,5 +144,25 @@ public class MainPanel extends JPanel {
 				MainFrame.getMainFrame().repaint();
 			}
 		});
+		
+	    idMovieField.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+				currentMovie = connexion.selectMovie();
+				movieTitle.setText(currentMovie.getTitle());
+				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
+				idMovieField.setText(Integer.toString(currentMovie.getId()));
+				if (currentMovie.getPoster() != null) {
+					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
+				} else {
+					moviePoster.setIcon(null);
+				}
+				MainFrame.getMainFrame().repaint();
+	        }
+	    });
+	}
+
+	public int getIdMovieField() {
+		return Integer.parseInt(idMovieField.getText());
 	}
 }
