@@ -46,10 +46,19 @@ public class ConnectDB {
 		}
 	}
 	
+	public int getCurrentId() {
+		return currentId;
+	}
+
+	public void setCurrentId(int currentId) {
+		this.currentId = currentId;
+	}
+
 	public Movie getMovie() {
 		Movie movie = new Movie(0,"");
 		try {
 			sql = this.connection.createStatement();
+			System.out.println(this.currentId);
 			ResultSet rs = sql.executeQuery("SELECT * FROM movie WHERE mov_id = " + this.MoviesId.get(this.currentId));
 			
 			while (rs.next()) {
@@ -57,11 +66,30 @@ public class ConnectDB {
 				movie.setPoster(rs.getString("poster"));
 				movie.setYear(rs.getInt("year"));
 				movie.setRating(rs.getDouble("rating"));
+				movie.setGenres(rs.getString("genres"));
+				movie.setSynopsis(rs.getString("synopsis"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return movie;
+	}
+	
+	public ArrayList<People> getInfos(int id) {
+		ArrayList<People> peopleList = new ArrayList<People>();
+		try {
+			sql = this.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM role INNER JOIN people ON people.peo_id = role.peo_id WHERE mov_id = " + id);
+			
+			int i = 0;
+			while (rs.next()) {
+				peopleList.add(i, new People(rs.getInt("peo_id"), rs.getString("peo_name"), rs.getString("rol_name")));
+				i++;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return peopleList;
 	}
 	
 	public void disconnect() {
@@ -80,11 +108,16 @@ public class ConnectDB {
 	
 	public Movie lastMovie() {
 		this.currentId = (this.currentId - 1) % this.MoviesId.size();
+		if (this.currentId == -1) {
+			this.currentId = MoviesId.size() - 1;
+		}
 		return this.getMovie();
 	}
 	
-	public Movie selectMovie() {
-		this.currentId = MainFrame.getMainPanel().getIdMovieField() - 1;
+	public Movie selectMovie(int idMovie) {
+		this.currentId = idMovie - 1;
+		this.currentId = this.MoviesId.indexOf(idMovie);
+		System.out.println("ID : " + this.MoviesId.get(this.currentId));
 		return this.getMovie();
 	}
 }
