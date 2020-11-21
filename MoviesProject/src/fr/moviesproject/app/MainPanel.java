@@ -1,21 +1,37 @@
 package fr.moviesproject.app;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.border.Border;
+import javax.swing.border.MatteBorder;
 
 @SuppressWarnings("serial")
 public class MainPanel extends JPanel {
 	private static ConnectDB connexion = new ConnectDB();
 	private static Movie currentMovie = connexion.getMovie();
+	private static ArrayList<People> infos = connexion.getInfos(currentMovie.getId());
 	
 	
 	private JTextField searchTitle = new JTextField("Recherche par titre");
@@ -28,6 +44,8 @@ public class MainPanel extends JPanel {
 	private JButton lastMovie = new JButton("Précédent");
 	private JButton nextMovie = new JButton("Suivant");
 	
+	private ArrayList<JLabel> accessInfosList = new ArrayList<JLabel>();
+	
 	private Font fontBtn = new Font("Verdana", Font.PLAIN, 15);
 	
 	private JLabel movieTitle = new JLabel(currentMovie.getTitle());
@@ -35,6 +53,14 @@ public class MainPanel extends JPanel {
 	private JLabel movieRating = new JLabel("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
 	private JTextArea movieYear = new JTextArea("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 	
+	private JLabel partTitle = new JLabel("Participants :");
+	private JPanel boxInfos = new JPanel();
+	private JPanel contentBox = new JPanel();
+	private JScrollPane scroll = new JScrollPane(boxInfos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	
+	private JLabel genres = new JLabel("Genres : " + currentMovie.getGenres());
+	private JLabel synTitle = new JLabel("Synopsis");
+	private JLabel synopsis = new JLabel("<html>" + currentMovie.getSynopsis() + " <br/> </html>");
 	
 	public MainPanel() {
 		this.setLayout(null);
@@ -101,6 +127,64 @@ public class MainPanel extends JPanel {
 		movieYear.setEditable(false);
 		movieYear.setOpaque(true);
 		
+		partTitle.setBounds(320, 330, 200, 35);
+		partTitle.setBorder(BorderFactory.createMatteBorder(2, 2, 1, 2, Color.BLACK));
+		partTitle.setOpaque(true);
+		partTitle.setBackground(Color.ORANGE);
+		partTitle.setFont(new Font("Verdana", Font.PLAIN, 20));
+		partTitle.setHorizontalAlignment(JLabel.CENTER);
+		this.add(partTitle);
+		
+		boxInfos.setLayout(new BoxLayout(boxInfos, BoxLayout.Y_AXIS));
+		scroll.setBounds(320, 365, 200, 281);
+		scroll.setBorder(BorderFactory.createEmptyBorder());
+		scroll.getVerticalScrollBar().setBorder(BorderFactory.createMatteBorder(1, 0, 0, 2, Color.BLACK));
+		this.add(scroll);
+		
+		genres.setBounds(10, 650, 510, 35);
+		genres.setFont(new Font("Verdana", Font.PLAIN, 20));
+		genres.setHorizontalAlignment(JLabel.CENTER);
+		genres.setBackground(Color.BLACK);
+		genres.setForeground(Color.WHITE);
+		genres.setOpaque(true);
+		
+		for (int i=0 ; i<infos.size() ; i++) {
+			JLabel infosBtn = new JLabel();
+			infosBtn.setText("<html> <B> Personne : </B> " + infos.get(i).getPeoName() + " <br/> <B> Rôle : </B> " + infos.get(i).getRole() + "</html>");
+			infosBtn.setPreferredSize(new Dimension(150, 35));
+			infosBtn.setBackground(Color.ORANGE);
+			infosBtn.setOpaque(true);
+			infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
+			infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
+			accessInfosList.add(i, infosBtn);
+			contentBox.add(accessInfosList.get(i));
+		}
+			
+		contentBox.setLayout(new GridLayout(0,1));
+		
+		boxInfos.add(contentBox);
+
+		
+		synTitle.setBounds(10, 690, 510, 35);
+		synTitle.setBorder(new MatteBorder(2, 2, 2, 2, Color.BLACK));
+		synTitle.setBackground(Color.BLACK);
+		synTitle.setForeground(Color.WHITE);
+		synTitle.setFont(new Font("Verdana", Font.PLAIN, 20));
+		synTitle.setHorizontalAlignment(JLabel.CENTER);
+		synTitle.setOpaque(true);
+		
+		this.add(synTitle);
+		
+		synopsis.setBounds(10, 725, 510, 180);
+		synopsis.setVerticalAlignment(JLabel.TOP);
+		synopsis.setBorder(new MatteBorder(0, 2, 2, 2, Color.BLACK));
+		synopsis.setFont(new Font("Verdana", Font.PLAIN, 11));
+
+		
+		
+		
+		System.out.println("Taille de la liste people : " + infos.size());		
+		
 		this.add(searchTitle);
 		this.add(goTitle);
 		this.add(searchName);
@@ -112,14 +196,36 @@ public class MainPanel extends JPanel {
 		this.add(moviePoster);
 		this.add(movieRating);
 		this.add(movieYear);
+		this.add(genres);
+		this.add(synopsis);
+		
 		
 		nextMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentMovie = connexion.nextMovie();
+				infos.clear();
+				infos = connexion.getInfos(currentMovie.getId());
 				movieTitle.setText(currentMovie.getTitle());
 				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
 				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 				idMovieField.setText(Integer.toString(currentMovie.getId()));
+				genres.setText("Genres : " + currentMovie.getGenres());
+				synopsis.setText("<html>" + currentMovie.getSynopsis() + "<br/> </html>");
+
+				
+				contentBox.removeAll();
+				for (int i=0 ; i<infos.size() ; i++) {
+					JLabel infosBtn = new JLabel();
+					infosBtn.setText("<html> <B> Personne : </B> " + infos.get(i).getPeoName() + " <br/> <B> Rôle : </B> " + infos.get(i).getRole() + "</html>");
+					infosBtn.setPreferredSize(new Dimension(150, 40));
+					infosBtn.setBackground(Color.ORANGE);
+					infosBtn.setOpaque(true);
+					infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
+					infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
+					accessInfosList.add(i, infosBtn);
+					contentBox.add(accessInfosList.get(i));
+				}
+	
 				if (currentMovie.getPoster() != null) {
 					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
 				} else {
@@ -132,10 +238,28 @@ public class MainPanel extends JPanel {
 		lastMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				currentMovie = connexion.lastMovie();
+				infos.clear();
+				infos = connexion.getInfos(currentMovie.getId());
 				movieTitle.setText(currentMovie.getTitle());
 				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
 				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
 				idMovieField.setText(Integer.toString(currentMovie.getId()));
+				genres.setText("Genres : " + currentMovie.getGenres());
+				synopsis.setText("<html>" + currentMovie.getSynopsis() + "<br/> </html>");
+				
+				contentBox.removeAll();
+				for (int i=0 ; i<infos.size() ; i++) {
+					JLabel infosBtn = new JLabel();
+					infosBtn.setText("<html> <B> Personne : </B> " + infos.get(i).getPeoName() + " <br/> <B> Rôle : </B> " + infos.get(i).getRole() + "</html>");
+					infosBtn.setPreferredSize(new Dimension(150, 40));
+					infosBtn.setBackground(Color.ORANGE);
+					infosBtn.setOpaque(true);
+					infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
+					infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
+					accessInfosList.add(i, infosBtn);
+					contentBox.add(accessInfosList.get(i));
+				}
+	
 				if (currentMovie.getPoster() != null) {
 					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
 				} else {
@@ -147,11 +271,29 @@ public class MainPanel extends JPanel {
 		
 	    idMovieField.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
-				currentMovie = connexion.selectMovie();
+				currentMovie = connexion.selectMovie(Integer.valueOf(idMovieField.getText()));
+				infos.clear();
+				infos = connexion.getInfos(currentMovie.getId());
 				movieTitle.setText(currentMovie.getTitle());
 				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
 				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
-				idMovieField.setText(Integer.toString(currentMovie.getId()));
+				idMovieField.setText(String.valueOf(currentMovie.getId()));
+				genres.setText("Genres : " + currentMovie.getGenres());
+				synopsis.setText("<html>" + currentMovie.getSynopsis() + "<br/> </html>");
+				
+				contentBox.removeAll();
+				for (int i=0 ; i<infos.size() ; i++) {
+					JLabel infosBtn = new JLabel();
+					infosBtn.setText("<html> <B> Personne : </B> " + infos.get(i).getPeoName() + " <br/> <B> Rôle : </B> " + infos.get(i).getRole() + "</html>");
+					infosBtn.setPreferredSize(new Dimension(150, 40));
+					infosBtn.setBackground(Color.ORANGE);
+					infosBtn.setOpaque(true);
+					infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
+					infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
+					accessInfosList.add(i, infosBtn);
+					contentBox.add(accessInfosList.get(i));
+				}
+				
 				if (currentMovie.getPoster() != null) {
 					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
 				} else {
@@ -160,9 +302,5 @@ public class MainPanel extends JPanel {
 				MainFrame.getMainFrame().repaint();
 	        }
 	    });
-	}
-
-	public int getIdMovieField() {
-		return Integer.parseInt(idMovieField.getText());
 	}
 }
