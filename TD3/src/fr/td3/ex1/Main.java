@@ -24,6 +24,8 @@ public class Main {
 		
 		JFrame frame = new JFrame();
 		
+		System.out.println(1);
+		
 		JButton btn_next = new JButton("Suivant");
 		btn_next.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
