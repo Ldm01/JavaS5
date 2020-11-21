@@ -10,7 +10,7 @@ public class MainFrame extends JFrame {
 
 	public MainFrame() {
 		this.setTitle("Movies Project");
-		this.setSize(550, 900);
+		this.setSize(550, 950);
 		this.setLocationRelativeTo(null); // Permet de centrer la fenêtre à l'ouverture
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
@@ -22,6 +22,7 @@ public class MainFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		mainFrame = new MainFrame();
+		//System.out.println(MainFrame.getMainPanel().getIdMovieFieldValue() - 1);
 	}
 	
 	public static MainFrame getMainFrame() {
