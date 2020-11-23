@@ -92,6 +92,25 @@ public class ConnectDB {
 		return peopleList;
 	}
 	
+	public ArrayList<Movie> searchMovie(String movieTitle) {
+		ArrayList<Movie> arrayMovie = new ArrayList<Movie>();
+		try {
+			sql = this.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM movie WHERE title LIKE \""+ movieTitle +"%\" ");
+			
+			int i = 0;
+			while (rs.next()) {
+				arrayMovie.add(new Movie(rs.getInt("mov_id"), rs.getString("title")));
+				arrayMovie.get(i).setYear(rs.getInt("year"));
+				arrayMovie.get(i).setPoster(rs.getString("poster"));
+				i++;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return arrayMovie;
+	}
+	
 	public void disconnect() {
 		try {
 			this.connection.close();
