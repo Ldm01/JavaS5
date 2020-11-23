@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -61,6 +62,17 @@ public class MainPanel extends JPanel {
 	private JLabel genres = new JLabel("Genres : " + currentMovie.getGenres());
 	private JLabel synTitle = new JLabel("Synopsis");
 	private JLabel synopsis = new JLabel("<html>" + currentMovie.getSynopsis() + " <br/> </html>");
+	
+	private JPanel searchBoxMv = new JPanel();
+	private JPanel searchMovie = new JPanel();
+	private JScrollPane scrollMv = new JScrollPane(searchBoxMv, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	
+	private JLabel titleSearch = new JLabel("<html> Test <br/> 1996");
+	//private JLabel yearSearch = new JLabel("1996");
+	private JLabel posterSearch = new JLabel(new ImageIcon(currentMovie.getPoster()));
+	
+
+	
 	
 	public MainPanel() {
 		this.setLayout(null);
@@ -179,9 +191,35 @@ public class MainPanel extends JPanel {
 		synopsis.setVerticalAlignment(JLabel.TOP);
 		synopsis.setBorder(new MatteBorder(0, 2, 2, 2, Color.BLACK));
 		synopsis.setFont(new Font("Verdana", Font.PLAIN, 11));
-
+		
+		//searchBoxMv.setLayout(new BoxLayout(searchBoxMv, BoxLayout.Y_AXIS));
+		scrollMv.setBounds(10, 45, 410, 200);
+		scrollMv.setBorder(BorderFactory.createEmptyBorder());
+		scrollMv.getVerticalScrollBar().setBorder(BorderFactory.createMatteBorder(1, 0, 0, 2, Color.BLACK));
+		//this.add(scrollMv);
+		
+		posterSearch.setSize(300/10, 448/10);
+		posterSearch.setBounds(10, 45, 300/10, 448/10);
+		//searchMovie.setLayout(new GridLayout(1,2));
+		//searchMovie.setSize(100, 200);
+		
+		posterSearch.setAlignmentX(JLabel.LEFT_ALIGNMENT);
+		
+		titleSearch.setAlignmentX(JLabel.RIGHT_ALIGNMENT);
+		
+		searchMovie.add(posterSearch);
+		searchMovie.add(titleSearch);
+		searchMovie.setBounds(10, 45, 410, 448/5);
 		
 		
+		searchBoxMv.add(searchMovie);
+		
+		this.add(searchMovie);
+		this.add(scrollMv);
+		
+		
+		//posterSearch.setBounds(r);
+		//this.add(posterSearch);
 		
 		System.out.println("Taille de la liste people : " + infos.size());		
 		
@@ -198,7 +236,6 @@ public class MainPanel extends JPanel {
 		this.add(movieYear);
 		this.add(genres);
 		this.add(synopsis);
-		
 		
 		nextMovie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -270,6 +307,40 @@ public class MainPanel extends JPanel {
 		});
 		
 	    idMovieField.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+				currentMovie = connexion.selectMovie(Integer.valueOf(idMovieField.getText()));
+				infos.clear();
+				infos = connexion.getInfos(currentMovie.getId());
+				movieTitle.setText(currentMovie.getTitle());
+				movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+				movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
+				idMovieField.setText(String.valueOf(currentMovie.getId()));
+				genres.setText("Genres : " + currentMovie.getGenres());
+				synopsis.setText("<html>" + currentMovie.getSynopsis() + "<br/> </html>");
+				
+				contentBox.removeAll();
+				for (int i=0 ; i<infos.size() ; i++) {
+					JLabel infosBtn = new JLabel();
+					infosBtn.setText("<html> <B> Personne : </B> " + infos.get(i).getPeoName() + " <br/> <B> Rôle : </B> " + infos.get(i).getRole() + "</html>");
+					infosBtn.setPreferredSize(new Dimension(150, 40));
+					infosBtn.setBackground(Color.ORANGE);
+					infosBtn.setOpaque(true);
+					infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
+					infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
+					accessInfosList.add(i, infosBtn);
+					contentBox.add(accessInfosList.get(i));
+				}
+				
+				if (currentMovie.getPoster() != null) {
+					moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
+				} else {
+					moviePoster.setIcon(null);
+				}
+				MainFrame.getMainFrame().repaint();
+	        }
+	    });
+	    
+	    goTitle.addActionListener(new ActionListener() {
 	        public void actionPerformed(ActionEvent e) {
 				currentMovie = connexion.selectMovie(Integer.valueOf(idMovieField.getText()));
 				infos.clear();
