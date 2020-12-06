@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 public class MainFrame extends JFrame {
 	private static MainFrame mainFrame;
 	private static MainPanel mainPanel;
+	private static MovieFrame movieFrame;
 
 	public MainFrame() {
 		this.setTitle("Movies Project");
@@ -22,7 +23,6 @@ public class MainFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		mainFrame = new MainFrame();
-		//System.out.println(MainFrame.getMainPanel().getIdMovieFieldValue() - 1);
 	}
 	
 	public static MainFrame getMainFrame() {
