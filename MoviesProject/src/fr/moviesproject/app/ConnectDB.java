@@ -92,6 +92,13 @@ public class ConnectDB {
 		return peopleList;
 	}
 	
+	/*public People getPeopleMovies(int peoId) {
+		try {
+			sql = this.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM");
+		}
+	}*/
+	
 	public ArrayList<Movie> searchMovie(String movieTitle) {
 		ArrayList<Movie> arrayMovie = new ArrayList<Movie>();
 		try {
