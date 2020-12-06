@@ -21,7 +21,7 @@ import javax.swing.border.MatteBorder;
 @SuppressWarnings("serial")
 public class MoviePanel extends JPanel {
 	private static ConnectDB connexion = new ConnectDB();
-	private static Movie currentMovie = connexion.getMovie();
+	private static Movie currentMovie = connexion.selectMovie(MainFrame.getMainPanel().getId());
 	private static ArrayList<People> infos = connexion.getInfos(currentMovie.getId());
 	
 	private ArrayList<JLabel> accessInfosList = new ArrayList<JLabel>();
@@ -56,7 +56,8 @@ public class MoviePanel extends JPanel {
 	}
 	
 	public void initComponents() {
-		
+		this.repaint();
+		System.out.println("Id movie Panel = " + currentMovie.getId());
 		backBtn.setBounds(10, 10, 100, 35);
 		backBtn.setFont(fontBtn);
 		backBtn.setBackground(Color.BLACK);
@@ -144,10 +145,12 @@ public class MoviePanel extends JPanel {
 		this.add(genres);
 		this.add(synopsis);
 		
+		this.repaint();
+		
 		backBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				MainFrame.getMainPanel().getMovieFrame().dispose();
 				MainFrame.getMainFrame().setVisible(true);
+				MainFrame.getMainPanel().getMovieFrame().dispose();
 			}
 		});
 	}

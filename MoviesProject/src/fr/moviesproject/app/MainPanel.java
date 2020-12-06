@@ -3,6 +3,7 @@ package fr.moviesproject.app;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -11,6 +12,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -33,6 +36,7 @@ public class MainPanel extends JPanel {
 	private static ConnectDB connexion = new ConnectDB();
 	private static Movie currentMovie = connexion.getMovie();
 	private static ArrayList<People> infos = connexion.getInfos(currentMovie.getId());
+	private static MovieFrame movieFrame;
 	
 	
 	private JTextField searchTitle = new JTextField("Recherche par titre");
@@ -69,7 +73,7 @@ public class MainPanel extends JPanel {
 	
 	private JLabel titleSearch = new JLabel("<html> Test <br/> 1996");
 	//private JLabel yearSearch = new JLabel("1996");
-	private JLabel posterSearch = new JLabel(new ImageIcon(currentMovie.getPoster()));
+	//private JLabel posterSearch = new JLabel(new ImageIcon(currentMovie.getPoster()));
 	
 
 	
@@ -192,7 +196,7 @@ public class MainPanel extends JPanel {
 		synopsis.setBorder(new MatteBorder(0, 2, 2, 2, Color.BLACK));
 		synopsis.setFont(new Font("Verdana", Font.PLAIN, 11));
 		
-		//searchBoxMv.setLayout(new BoxLayout(searchBoxMv, BoxLayout.Y_AXIS));
+		/*//searchBoxMv.setLayout(new BoxLayout(searchBoxMv, BoxLayout.Y_AXIS));
 		scrollMv.setBounds(10, 45, 410, 200);
 		scrollMv.setBorder(BorderFactory.createEmptyBorder());
 		scrollMv.getVerticalScrollBar().setBorder(BorderFactory.createMatteBorder(1, 0, 0, 2, Color.BLACK));
@@ -215,7 +219,7 @@ public class MainPanel extends JPanel {
 		searchBoxMv.add(searchMovie);
 		
 		this.add(searchMovie);
-		this.add(scrollMv);
+		this.add(scrollMv);*/
 		
 		
 		//posterSearch.setBounds(r);
@@ -294,6 +298,8 @@ public class MainPanel extends JPanel {
 					infosBtn.setBorder(BorderFactory.createMatteBorder(1, 2, 1, 2, Color.BLACK));
 					infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
 					accessInfosList.add(i, infosBtn);
+					accessInfosList.add(i, infosBtn);
+					System.out.println("Test");
 					contentBox.add(accessInfosList.get(i));
 				}
 	
@@ -373,5 +379,47 @@ public class MainPanel extends JPanel {
 				MainFrame.getMainFrame().repaint();
 	        }
 	    });
+	    
+	    movieTitle.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+					MainFrame.getMainFrame().setVisible(false);
+					movieFrame = new MovieFrame();			
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				movieTitle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
+	
+	public MovieFrame getMovieFrame() {
+		return movieFrame;
+	}
+
+	public int getId() {
+		System.out.println(currentMovie.getId());
+		return currentMovie.getId();
+	}
+
 }
