@@ -9,7 +9,7 @@ public class PeopleFrame extends JFrame {
 
 	public PeopleFrame() {
 		this.setTitle("Movies Project");
-		this.setSize(550, 950);
+		this.setSize(950, 680);
 		this.setLocationRelativeTo(null); // Permet de centrer la fenêtre à l'ouverture
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setResizable(false);
