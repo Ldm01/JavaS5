@@ -1,9 +1,12 @@
 package fr.moviesproject.app;
 
+import java.util.ArrayList;
+
 public class People {
 	protected int peoId = 0;
 	protected String peoName = "";
 	protected String role = "";
+	protected ArrayList<Movie> movies = new ArrayList<Movie>();
 	
 	public People(int peoId, String peoName, String role) {
 		this.peoId = peoId;
@@ -33,6 +36,14 @@ public class People {
 
 	public void setRole(String role) {
 		this.role = role;
+	}
+	
+	public void setMovies(ArrayList<Movie> movies) {
+		this.movies = movies;
+	}
+	
+	public ArrayList<Movie> getMovies() {
+		return movies;
 	}
 
 
