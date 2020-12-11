@@ -1,11 +1,14 @@
 package fr.moviesproject.app;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -21,8 +24,12 @@ import javax.swing.border.MatteBorder;
 @SuppressWarnings("serial")
 public class MoviePanel extends JPanel {
 	private static ConnectDB connexion = new ConnectDB();
-	private static Movie currentMovie = connexion.selectMovie(MainFrame.getMainPanel().getId());
-	private static ArrayList<People> infos = connexion.getInfos(currentMovie.getId());
+	private static MovieFrame mf;
+
+	private static PeopleFrame peopleFrame;
+	
+	private static Movie currentMovie;
+	private static ArrayList<People> infos = new ArrayList<People>();
 	
 	private ArrayList<JLabel> accessInfosList = new ArrayList<JLabel>();
 	
@@ -30,33 +37,41 @@ public class MoviePanel extends JPanel {
 	
 	private JButton backBtn = new JButton("Retour");
 	
-	private JLabel movieTitle = new JLabel(currentMovie.getTitle());
-	private JLabel moviePoster = new JLabel(new ImageIcon(currentMovie.getPoster()));
-	private JLabel movieRating = new JLabel("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
-	private JTextArea movieYear = new JTextArea("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
+	private JLabel movieTitle = new JLabel();
+	private JLabel moviePoster = new JLabel();
+	private JLabel movieRating = new JLabel();
+	private JTextArea movieYear = new JTextArea();
 	
 	private JLabel partTitle = new JLabel("Participants :");
 	private JPanel boxInfos = new JPanel();
 	private JPanel contentBox = new JPanel();
 	private JScrollPane scroll = new JScrollPane(boxInfos, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 	
-	private JLabel genres = new JLabel("Genres : " + currentMovie.getGenres());
+	private JLabel genres = new JLabel();
 	private JLabel synTitle = new JLabel("Synopsis");
-	private JLabel synopsis = new JLabel("<html>" + currentMovie.getSynopsis() + " <br/> </html>");
+	private JLabel synopsis = new JLabel();
 	
-	public MoviePanel() {
+	public MoviePanel(MovieFrame mf) {
 		this.setLayout(null);
-	    
-		try {
-	        initComponents();
-	    } catch (Exception e) {
-	    	System.out.println(e);
-	    }
-		
-	}
-	
-	public void initComponents() {
 		this.repaint();
+		
+		currentMovie = connexion.selectMovie(mf.getId());
+		infos = connexion.getInfos(mf.getId());
+		
+		movieTitle.setText(currentMovie.getTitle());
+
+		if (currentMovie.getPoster() != null) {
+			moviePoster.setIcon(new ImageIcon(currentMovie.getPoster()));
+		} else {
+			moviePoster.setIcon(null);
+		}
+		
+		movieRating.setText("Note : \n" + Double.toString(currentMovie.getRating()) + "/10");
+		movieYear.setText("         Année \n    de production : \n          "+ Integer.toString(currentMovie.getYear()));
+		
+		genres.setText("Genres : " + currentMovie.getGenres());
+		synopsis.setText("<html>" + currentMovie.getSynopsis() + " <br/> </html>");
+		
 		System.out.println("Id movie Panel = " + currentMovie.getId());
 		backBtn.setBounds(10, 10, 100, 35);
 		backBtn.setFont(fontBtn);
@@ -115,6 +130,43 @@ public class MoviePanel extends JPanel {
 			infosBtn.setFont(new Font("Verdana", Font.PLAIN, 10));
 			accessInfosList.add(i, infosBtn);
 			contentBox.add(accessInfosList.get(i));
+			
+			accessInfosList.get(i).setCursor(new Cursor(Cursor.HAND_CURSOR));
+			int idPeople = infos.get(i).getPeoId();
+			
+			infosBtn.addMouseListener(new MouseListener() {
+				
+				@Override
+				public void mouseReleased(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mousePressed(MouseEvent e) {
+					mf.setVisible(false);
+					peopleFrame = new PeopleFrame(idPeople);
+					System.out.println(idPeople);
+				}
+				
+				@Override
+				public void mouseExited(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					//setCursor(new Cursor(Cursor.HAND_CURSOR));
+					
+				}
+				
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+			});	
 		}
 			
 		contentBox.setLayout(new GridLayout(0,1));
@@ -154,4 +206,7 @@ public class MoviePanel extends JPanel {
 			}
 		});
 	}
+		
 }
+		
+

@@ -23,6 +23,7 @@ public class MainFrame extends JFrame {
 	
 	public static void main(String[] args) {
 		mainFrame = new MainFrame();
+		//PeopleFrame pF = new PeopleFrame();
 	}
 	
 	public static MainFrame getMainFrame() {

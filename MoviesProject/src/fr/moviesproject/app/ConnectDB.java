@@ -92,18 +92,11 @@ public class ConnectDB {
 		return peopleList;
 	}
 	
-	/*public People getPeopleMovies(int peoId) {
-		try {
-			sql = this.connection.createStatement();
-			ResultSet rs = sql.executeQuery("SELECT * FROM");
-		}
-	}*/
-	
 	public ArrayList<Movie> searchMovie(String movieTitle) {
 		ArrayList<Movie> arrayMovie = new ArrayList<Movie>();
 		try {
 			sql = this.connection.createStatement();
-			ResultSet rs = sql.executeQuery("SELECT * FROM movie WHERE title LIKE \""+ movieTitle +"%\" ");
+			ResultSet rs = sql.executeQuery("SELECT * FROM movie WHERE title LIKE \"%"+ movieTitle +"%\" ");
 			
 			int i = 0;
 			while (rs.next()) {
@@ -116,6 +109,29 @@ public class ConnectDB {
 			e.printStackTrace();
 		}
 		return arrayMovie;
+	}
+	
+	public ArrayList<People> getPeopleMovies(int id) {
+		People peo = new People(0,"","");
+		ArrayList<People> peoList = new ArrayList<People>();
+		Movie movie = new Movie(0, "");
+		try {
+			sql = this.connection.createStatement();
+			ResultSet rs = sql.executeQuery("SELECT * FROM role INNER JOIN people ON role.peo_id = people.peo_id INNER JOIN movie ON movie.mov_id = role.mov_id WHERE people.peo_id = " + id);
+			
+			while (rs.next()) {
+				peo = new People(rs.getInt("peo_id"), rs.getString("peo_name"), rs.getString("rol_name"));
+				movie = new Movie(rs.getInt("mov_id"), rs.getString("title"));
+				movie.setYear(rs.getInt("year"));
+				movie.setPoster(rs.getString("poster"));
+				peo.setMovie(movie);
+				peoList.add(peo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return peoList;
 	}
 	
 	public void disconnect() {

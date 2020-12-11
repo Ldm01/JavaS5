@@ -6,7 +6,7 @@ public class People {
 	protected int peoId = 0;
 	protected String peoName = "";
 	protected String role = "";
-	protected ArrayList<Movie> movies = new ArrayList<Movie>();
+	protected Movie movie = new Movie(0,"");
 	
 	public People(int peoId, String peoName, String role) {
 		this.peoId = peoId;
@@ -38,12 +38,12 @@ public class People {
 		this.role = role;
 	}
 	
-	public void setMovies(ArrayList<Movie> movies) {
-		this.movies = movies;
+	public void setMovie(Movie movie) {
+		this.movie = movie;
 	}
 	
-	public ArrayList<Movie> getMovies() {
-		return movies;
+	public Movie getMovie() {
+		return movie;
 	}
 
 
